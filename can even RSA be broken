@@ -1,2 +1,119 @@
 #can even RSA be broken
 ##APPROACH
+At first I was not sure how this challenge could be solved because the only useful things given were n and e. I knew this was RSA but I did not know how someone could decrypt something with only these values.
+So I first tried to understand how RSA works and searched how RSA can be broken when only n and e are given.From that I found that n is made by multiplying two large prime numbers. The private key depends on these prime numbers. So if we can find the two prime numbers then we can calculate the other values needed for decryption.
+My first thought was to directly factor n. But n was very large so doing this normally did not look practical.
+I then went back to the hints. One of them mentioned randomness and another asked to notice something about n. This made me check the value of n more carefully instead of only thinking about normal factorisation.
+I also tried comparing n from multiple requests because the hint mentioned doing that. I thought maybe the same prime numbers were being reused or there was some pattern in the generated values.After checking n again I noticed something unusual.
+n is a even number.
+Normally n is made from two large prime numbers. Since only one prime number is even it means one of the prime numbers used to create n must be 2.
+That made the factorisation much easier than I expected.
+
+#solution
+i launched the instannce
+then i got $ nc chatelaine.cylabacademy.net 39190
+then i accessed the source code of the program
+"from sys import exit
+from Crypto.Util.number import bytes_to_long, inverse
+from setup import get_primes
+
+e = 65537
+
+def gen_key(k):
+    """
+    Generates RSA key with k bits
+    """
+    p,q = get_primes(k//2)
+    N = p*q
+    d = inverse(e, (p-1)*(q-1))
+
+    return ((N,e), d)
+
+def encrypt(pubkey, m):
+    N,e = pubkey
+    return pow(bytes_to_long(m.encode('utf-8')), e, N)
+
+def main(flag):
+    pubkey, _privkey = gen_key(1024)
+    encrypted = encrypt(pubkey, flag) 
+    return (pubkey[0], encrypted)
+
+if __name__ == "__main__":
+    flag = open('flag.txt', 'r').read()
+    flag = flag.strip()
+    N, cypher  = main(flag)
+    print("N:", N)
+    print("e:", e)
+    print("cyphertext:", cypher)
+    exit()
+
+"
+then i ran the command $ nc chatelaine.cylabacademy.net 39190
+ on powershell
+i couldnt run it and got an error 
+"PS C:\windows\system32> $ nc chatelaine.cylabacademy.net 39190
+$ : The term '$' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the
+spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ $ nc chatelaine.cylabacademy.net 15996
++ ~
+    + CategoryInfo          : ObjectNotFound: ($:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException"
+i didnt knew what it meant and how to make it correct so i used a bit ai to resolve this
+it told me this
+"It does basically the same thing as nc, but using PowerShell's built-in networking because nc isn't installed.
+
+$client = New-Object System.Net.Sockets.TcpClient("chatelaine.cylabacademy.net",15996)
+
+Connects your computer to the CTF server at that address and port.
+
+$stream = $client.GetStream()
+
+Opens the connection so your computer can receive data.
+
+$buffer = New-Object byte[] 4096
+
+Creates a temporary space to store what the server sends.
+
+$n = $stream.Read($buffer,0,$buffer.Length)
+
+Reads the server's message.
+
+[Text.Encoding]::ASCII.GetString($buffer,0,$n)
+
+Converts that message into normal readable text and displays it."
+got to know what was the problem and how to resolve itThe main trick was that n was even.
+prime1 = 2
+prime2 = n / 2
+Then I calculated:
+phi = (prime1 - 1) * (prime2 - 1)
+Since prime1 is 2:phi = prime2 - 1
+Then I calculated d:d = e^(-1) mod phi
+After getting d I decrypted the ciphertext using:
+m = c^d mod n
+where c is the ciphertext.
+I used PowerShell to do these calculations.
+The main part was:
+$q = $n / 2
+$phi = $q - 1
+$d = inv $e $phi
+$m = powmod $c $d $n
+After that the result was still a number so I converted it back into text.
+I first tried ,but my PowerShell version did not support this and gave me an error.
+So instead I converted the hex two characters at a time
+$bytes = for($i=0;$i -lt $hex.Length;$i+=2){
+Convert::ToByte($hex.Substring($i,2),16)
+}
+This finally gave me the flag.
+
+
+
+
+#FLAG
+academy{tw0_1$_pr!m3cfb893a9}
+
+#TAKEAWAY
+Always check the values carefully before trying complicated attacks because a small weakness can completely break RSA.
+
+AI HELP
+I used AI mainly when I got stuck with the PowerShell errors and did not know how to connect without netcat. I also used it to understand the RSA steps. From this I understood how n is made from two prime numbers and how finding them lets us calculate the private exponent and decrypt the ciphertext.
