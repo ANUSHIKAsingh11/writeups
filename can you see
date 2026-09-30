@@ -13,6 +13,6 @@ So the flag was hidden in the metadata of the image and then encoded using Base6
 
 FLAG
 academy{ME74D47A_HIDD3N_b65fe5f7}
-
 TAKEAWAY
 Always check the metadata of an image when there is nothing obvious inside the picture.
+
