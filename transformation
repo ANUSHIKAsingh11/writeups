@@ -1,0 +1,33 @@
+TRANSFORMATION
+APPROACH
+At first I did not really understand what the weird characters in the enc file were. The output looked like some kind of unicode or encoded text.
+I first thought about using some common decoders and checking if it was something like base64. But it did not look like normal encoded data.
+Then I checked the source code that was given with the challenge.
+''.join([chr((ord(flag[i]) << 8) + ord(flag[i + 1])) for i in range(0, len(flag), 2)])
+At first I did not understand what the << 8 was doing. After looking into it I understood that it was shifting the first character by 8 bits and then adding the next character.
+So it looked like two characters from the flag were being combined into one character.
+The hint said to look for decoders so I realised that instead of trying to decode it like normal encryption I should probably reverse what the given code was doing.
+
+SOLUTION
+The encoded text was 慣慤敭祻ㄶ形楴獟楮獴㌴摟潦弸強㤰扡㌷敽
+The code takes two characters at a time and does (ord(flag[i]) << 8) + ord(flag[i + 1])
+So to reverse it I took the unicode value of each encoded character using ord().
+The first character can be recovered using a right shift n >> 8 and the second character can be recovered using n & 255
+I used this Python code
+enc = "慣慤敭祻ㄶ形楴獟楮獴㌴摟潦弸強㤰扡㌷敽"
+flag = ""
+for x in enc:
+    n = ord(x)
+    flag += chr(n >> 8)
+    flag += chr(n & 255)
+print(flag)
+At first I thought I needed some special unicode decoder because of the strange characters. But after looking at the source code I understood that the characters were created by combining two normal characters.
+Running the code gave:academy{16_bits_inst34d_of_8_790ba37e}
+
+FLAG
+academy{16_bits_inst34d_of_8_790ba37e}
+TAKEAWAY
+When you get strange encoded data check the source code first because it may show exactly how the data was transformed.
+
+AI HELP
+I used AI to understand what the << 8 operation was doing and how to reverse it. I understood that two characters were combined into one unicode character and that the same operation could be reversed using >> 8 and & 255.
