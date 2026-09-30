@@ -28,6 +28,3 @@ FLAG
 academy{16_bits_inst34d_of_8_790ba37e}
 TAKEAWAY
 When you get strange encoded data check the source code first because it may show exactly how the data was transformed.
-
-AI HELP
-I used AI to understand what the << 8 operation was doing and how to reverse it. I understood that two characters were combined into one unicode character and that the same operation could be reversed using >> 8 and & 255.
