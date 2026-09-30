@@ -1,0 +1,22 @@
+CanYouSee
+APPROACH
+At first I just opened the image but it looked normal and I could not find anything in it.I thought maybe something was hidden in the image itself so I started by checking the image information. I used an online metadata viewer but it showed no metadata found. So I thought maybe that was not the right way.
+Then I tried another ExifTool website which showed more information. There I found an AttributionURL field with a long string that looked unusual. I thought it might be encoded so I checked what type of string it was.
+
+SOLUTION
+The file came inside unknown.zip. After extracting it I got ukn_reality.jpg.
+I first tried an online metadata viewer but it showed no metadata found
+Then I used an online ExifTool and found this [XMP-cc] AttributionURL : YWNhZGVteXtNRTc0RDQ3QV9ISUREM05fYjY1ZmU1Zjd9Cg==
+The string looked like Base64 because of its format, so I copied it and opened CyberChef.I used the From Base64 operation and pasted the string.
+The output was:academy{ME74D47A_HIDD3N_b65fe5f7}
+So the flag was hidden in the metadata of the image and then encoded using Base64.
+
+FLAG
+academy{ME74D47A_HIDD3N_b65fe5f7}
+
+TAKEAWAY
+Always check the metadata of an image when there is nothing obvious inside the picture.
+
+AI HELP
+
+I used AI when the first metadata website did not show anything and I was not sure what to try next. It helped me understand the ExifTool output and that the long AttributionURL string was Base64 which could be decoded using CyberChef.
