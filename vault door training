@@ -1,0 +1,32 @@
+vault-door-training
+APPROACH
+
+At first I thought this one would be a little more complicated because it was under reverse engineering. I was thinking maybe I would have to run the java file and somehow find the password from the program.
+I first looked at the main function but I was mostly confused by the substring line. I thought maybe the password was being changed before it was checked.
+Then I looked at the code below it and saw the checkPassword function. I still thought there might be some other condition before giving the password but then I read the return statement properly.
+It was just comparing the password with one string.
+So there was actually no complicated reverse engineering needed here. The password was already present in the source code.
+
+SOLUTION
+The important part I found was:
+  public boolean checkPassword(String password) {
+    return password.equals("w4rm1ng_Up_w1tH_jAv4_c02db1ca2a4");
+}
+
+At first I thought I had to enter the whole thing exactly as it is in the source code but then I checked the main function too.
+  There was this line:
+String input = userInput.substring("academy{".length(),userInput.length()-1);
+I was a bit confused by this at first.
+What it does is remove academy{ from the start and the } from the end before checking the password.
+So the actual password is:w4rm1ng_Up_w1tH_jAv4_c02db1ca2a4
+and the full flag should be:academy{w4rm1ng_Up_w1tH_jAv4_c02db1ca2a4}
+I then used the password in the program and got access granted.
+
+FLAG
+academy{w4rm1ng_Up_w1tH_jAv4_c02db1ca2a4}
+TAKEAWAY
+Always read the given source properly first because sometimes the password is already sitting there.
+
+AI HELP
+
+I used AI to understand the java code and the substring line because I was not fully sure what it was doing. I understood that the program removes the flag format before checking the actual password.
