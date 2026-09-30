@@ -1,2 +1,35 @@
-#RED
-##APPROACH
+RED
+APPROACH
+At first I was confused because the image was just a plain red square. I could not see anything useful in it.
+I first thought maybe the flag was hidden in the image by changing some pixels or colors. I also looked at the hints again. The Red? Ged? Bed? Aed? hint made me think about the different color channels.
+Then I noticed the last hint says to check whatever Facebook is called now. Facebook is called Meta so I thought maybe this was talking about metadata.
+I tried checking the metadata online but one site said no metadata was found. So that did not work.
+Then I tried an online steganography scanner. This gave me some hidden text results.
+One of the results was a poem and another one was a long string that looked like Base64.
+
+SOLUTION
+I uploaded red.png to an online zsteg/LSB scanner.It showed a hidden text in metadata:
+Crimson heart, vibrant and bold,
+Hearts flutter at your sight.
+Evenings glow softly red,
+Cherries burst with sweet life.
+Kisses linger with your warmth.
+Love deep as merlot.
+Scarlet leaves falling softly,
+Bold in every stroke.
+
+I took the first letter of each line:CHECKLSB
+So I understood that I had to check the LSB of the image.
+The scanner also found this hidden text:YWNhZGVteXtyM2RfMXNfdGgzX3VsdDFtNHQzX2N1cjNfZjByXzU0ZG4zNTVffQ==
+It looked like Base64 because of the format and the = at the end.
+I first thought the repeated string meant I had to decode the whole thing together, but then I realised the same Base64 text was just repeated multiple times. So I only used one copy.
+I opened CyberChef and used the From Base64 operation.
+The result was:academy{r3d_1s_th3_ult1m4t3_cur3_f0r_54dn355_}
+So the flag was found by checking the image data for LSB hidden text and then decoding the Base64.
+FLAG
+academy{r3d_1s_th3_ult1m4t3_cur3_f0r_54dn355_}
+TAKEAWAY
+Even if an image looks completely normal there can still be hidden data in its metadata or pixel bits.
+
+AI HELP
+I used AI to understand what the hints were trying to tell me and what LSB meant. I also used it when I was confused about the hidden Base64 text and how to decode it. I understood that the poem was giving the clue CHECKLSB and the hidden Base64 string contained the flag.
